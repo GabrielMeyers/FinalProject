@@ -3,16 +3,16 @@ import pygame
 
 
 class Car:
-    def __init__(self, vx, y):
+    def __init__(self, x, y):
         """
         This is where we set up the variables for this particular object as soon as it is created.
         """
-        self.x = 0
+        self.x = x
         self.y = y
-        self.vx = vx
+        self.vx = 50
         self.vy = 0
         self.i_am_alive = True
-        self.image = pygame.image.load("images/invader.gif")
+        self.image = pygame.image.load("images/The_Top_Alien.jpg")
         self.width = self.image.get_rect().width
         self.height = self.image.get_rect().height
 
@@ -35,7 +35,7 @@ class Car:
         self.x = self.x + self.vx * delta_T
         self.y = self.y + self.vy * delta_T
 
-        if self.x +self.width/2 > 600:
+        if self.x +self.width/2 > 750:
             self.vx *= -1
         if self.x - self.width/2 < 0:
             self.vx *= -1

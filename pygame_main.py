@@ -18,7 +18,7 @@ def setup():
     This happens once in the program, at the very beginning.
     """
     global canvas, objects_on_screen, objects_to_add, bg_color, game_mode, pie_list, the_chicken, the_clown, score, ammo, car_list, hits, misses
-    canvas = pygame.display.set_mode((600, 600))
+    canvas = pygame.display.set_mode((750, 750))
     objects_on_screen = []  # this is a list of all things that should be drawn on screen.
     objects_to_add = [] #this is a list of things that should be added to the list on screen. Put them here while you
                         #   are in the middle of the loop, and they will be added in later in the loop, when it is safe
@@ -28,14 +28,42 @@ def setup():
     car_list = []
     # Add any other things you would like to have the program do at startup here.
     reference_car = Car(0,0)
-    # left_car = Car(-300, 300+reference_car.height/2)
+    # Alien_1_1 = Car(-300, 300+reference_car.height/2)
     # right_car = Car(300, 300 - reference_car.height / 2)
-    left_car = Car(20 + reference_car.width/2,0 + reference_car.height/2)
-    right_car = Car(20 + 2 * reference_car.width/2, 0 + 2 * reference_car.height / 2)
-    car_list.append(left_car)
-    car_list.append(right_car)
-    objects_on_screen.append(left_car)
-    objects_on_screen.append(right_car)
+    x = 10
+    Alien_1_1 = Car(20 + reference_car.width/2,0 + reference_car.height/2)
+    Alien_1_2 = Car(20 + 3 * reference_car.width/2 + x, 0 +reference_car.height / 2)
+    Alien_1_3 = Car(20 + 5 * reference_car.width / 2 + 2 * x, 0 + reference_car.height / 2)
+    Alien_1_4 = Car(20 + 7 * reference_car.width / 2 + 3 * x, 0 + reference_car.height / 2)
+    Alien_1_5 = Car(20 + 9 * reference_car.width / 2 + 4 * x, 0 + reference_car.height / 2)
+    Alien_1_6 = Car(20 + 11 * reference_car.width / 2 + 5 * x, 0 + reference_car.height / 2)
+    Alien_1_7 = Car(20 + 13 * reference_car.width / 2 + 6 * x, 0 + reference_car.height / 2)
+    Alien_1_8 = Car(20 + 15 * reference_car.width / 2 + 7 * x, 0 + reference_car.height / 2)
+    Alien_1_9 = Car(20 + 17 * reference_car.width / 2 + 8 * x, 0 + reference_car.height / 2)
+    Alien_1_10 = Car(20 + 19 * reference_car.width / 2 + 9 * x, 0 + reference_car.height / 2)
+    Alien_1_11 = Car(20 + 21 * reference_car.width / 2 + 10 * x, 0 + reference_car.height / 2)
+    car_list.append(Alien_1_1)
+    car_list.append(Alien_1_2)
+    car_list.append(Alien_1_3)
+    car_list.append(Alien_1_4)
+    car_list.append(Alien_1_5)
+    car_list.append(Alien_1_6)
+    car_list.append(Alien_1_7)
+    car_list.append(Alien_1_8)
+    car_list.append(Alien_1_9)
+    car_list.append(Alien_1_10)
+    car_list.append(Alien_1_11)
+    objects_on_screen.append(Alien_1_1)
+    objects_on_screen.append(Alien_1_2)
+    objects_on_screen.append(Alien_1_3)
+    objects_on_screen.append(Alien_1_4)
+    objects_on_screen.append(Alien_1_5)
+    objects_on_screen.append(Alien_1_6)
+    objects_on_screen.append(Alien_1_7)
+    objects_on_screen.append(Alien_1_8)
+    objects_on_screen.append(Alien_1_9)
+    objects_on_screen.append(Alien_1_10)
+    objects_on_screen.append(Alien_1_11)
     the_clown = Clown()
     objects_on_screen.append(the_clown)
     pie_list = []
@@ -67,7 +95,7 @@ def loop(delta_T):
         add_new_objects()
         draw_objects()
         check_pie_clown_collision()
-        check_pie_car_collision()
+        check_pie_alien_collision()
         calc_misses()
         show_stats(delta_T) #optional. Comment this out if it annoys you.
         the_end_game()
@@ -198,16 +226,16 @@ def check_pie_clown_collision():
             # playsound('sounds/Smashingsound.mp3')
 
 
-def check_pie_car_collision():
+def check_pie_alien_collision():
     global score
     for pie in pie_list:
         for car in car_list:
             if abs(pie.x - car.x) < (pie.width/2 +car.width/2) and \
                 abs(pie.y - car.y) < (pie.height / 2 + car.height / 2):
                 pie.die()
-                print("Oops")
-                score -= 50
-                pygame.mixer.music.load('sounds/engineer_no01.mp3')
+                print("HIT")
+                score += 30
+                pygame.mixer.music.load('sounds/invaderkilled.wav')
                 pygame.mixer.music.play(1)
 
 def shoot_pie():
@@ -223,7 +251,7 @@ def calc_misses():
     misses = 10-ammo - hits
 
 def the_end_game():
-    global pie, clown, chicken, left_car, right_car
+    global pie, clown, chicken, Alien_1_1, Alien_1_2
     if ammo == 0:
         canvas.fill(pygame.Color("black"))
         gameover_font = pygame.font.SysFont("Arial", 96)
