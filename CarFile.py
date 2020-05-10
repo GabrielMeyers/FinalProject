@@ -12,7 +12,7 @@ class Car:
         self.vx = vx
         self.vy = 0
         self.i_am_alive = True
-        self.image = pygame.image.load("images/Cars.png")
+        self.image = pygame.image.load("images/invader.gif")
         self.width = self.image.get_rect().width
         self.height = self.image.get_rect().height
 

@@ -13,7 +13,7 @@ class Clown:
         self.vx = random.randrange (-200,200)
         self.vy = random.randrange (-200,200)
         self.i_am_alive = True
-        self.image = pygame.image.load("images/invader.gif")
+        self.image = pygame.image.load("images/Cars.png")
         self.width = self.image.get_rect().width
         self.height = self.image.get_rect().height
 

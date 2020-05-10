@@ -11,7 +11,7 @@ from ClownFile import Clown
 from ChickenFile import Chicken
 from PieFile import Pie
 from CarFile import Car
-from playsound import playsound
+
 # =====================  setup()
 def setup():
     """
@@ -28,8 +28,9 @@ def setup():
     car_list = []
     # Add any other things you would like to have the program do at startup here.
     reference_car = Car(0,0)
-    left_car = Car(-300, 300+reference_car.height/2)
-    right_car = Car(300, 300 - reference_car.height / 2)
+    # left_car = Car(-300, 300+reference_car.height/2)
+    # right_car = Car(300, 300 - reference_car.height / 2)
+
     car_list.append(left_car)
     car_list.append(right_car)
     objects_on_screen.append(left_car)
