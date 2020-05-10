@@ -7,7 +7,7 @@ class Car:
         """
         This is where we set up the variables for this particular object as soon as it is created.
         """
-        self.x = 300
+        self.x = 0
         self.y = y
         self.vx = vx
         self.vy = 0
