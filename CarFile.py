@@ -12,7 +12,7 @@ class Car:
         self.vx = 50
         self.vy = 0
         self.i_am_alive = True
-        self.image = pygame.image.load("images/The_Top_Alien.jpg")
+        self.image = pygame.image.load("images/Top_alien.png")
         self.width = self.image.get_rect().width
         self.height = self.image.get_rect().height
 

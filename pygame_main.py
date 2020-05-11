@@ -11,6 +11,7 @@ from ClownFile import Clown
 from ChickenFile import Chicken
 from PieFile import Pie
 from CarFile import Car
+from Second_line_alien import Classic_Invader
 
 # =====================  setup()
 def setup():
@@ -26,44 +27,24 @@ def setup():
     bg_color = pygame.Color(128,128,128)  # you can find a list of color names at https://goo.gl/KR7Pke
     game_mode = GAME_MODE_MAIN
     car_list = []
+    invader_list = []
     # Add any other things you would like to have the program do at startup here.
     reference_car = Car(0,0)
+    reference_invader = Classic_Invader(0,0)
     # Alien_1_1 = Car(-300, 300+reference_car.height/2)
     # right_car = Car(300, 300 - reference_car.height / 2)
     x = 10
-    Alien_1_1 = Car(20 + reference_car.width/2,0 + reference_car.height/2)
-    Alien_1_2 = Car(20 + 3 * reference_car.width/2 + x, 0 +reference_car.height / 2)
-    Alien_1_3 = Car(20 + 5 * reference_car.width / 2 + 2 * x, 0 + reference_car.height / 2)
-    Alien_1_4 = Car(20 + 7 * reference_car.width / 2 + 3 * x, 0 + reference_car.height / 2)
-    Alien_1_5 = Car(20 + 9 * reference_car.width / 2 + 4 * x, 0 + reference_car.height / 2)
-    Alien_1_6 = Car(20 + 11 * reference_car.width / 2 + 5 * x, 0 + reference_car.height / 2)
-    Alien_1_7 = Car(20 + 13 * reference_car.width / 2 + 6 * x, 0 + reference_car.height / 2)
-    Alien_1_8 = Car(20 + 15 * reference_car.width / 2 + 7 * x, 0 + reference_car.height / 2)
-    Alien_1_9 = Car(20 + 17 * reference_car.width / 2 + 8 * x, 0 + reference_car.height / 2)
-    Alien_1_10 = Car(20 + 19 * reference_car.width / 2 + 9 * x, 0 + reference_car.height / 2)
-    Alien_1_11 = Car(20 + 21 * reference_car.width / 2 + 10 * x, 0 + reference_car.height / 2)
-    car_list.append(Alien_1_1)
-    car_list.append(Alien_1_2)
-    car_list.append(Alien_1_3)
-    car_list.append(Alien_1_4)
-    car_list.append(Alien_1_5)
-    car_list.append(Alien_1_6)
-    car_list.append(Alien_1_7)
-    car_list.append(Alien_1_8)
-    car_list.append(Alien_1_9)
-    car_list.append(Alien_1_10)
-    car_list.append(Alien_1_11)
-    objects_on_screen.append(Alien_1_1)
-    objects_on_screen.append(Alien_1_2)
-    objects_on_screen.append(Alien_1_3)
-    objects_on_screen.append(Alien_1_4)
-    objects_on_screen.append(Alien_1_5)
-    objects_on_screen.append(Alien_1_6)
-    objects_on_screen.append(Alien_1_7)
-    objects_on_screen.append(Alien_1_8)
-    objects_on_screen.append(Alien_1_9)
-    objects_on_screen.append(Alien_1_10)
-    objects_on_screen.append(Alien_1_11)
+    row_1_alien_list = []
+    row_2_alien_list = []
+    for i in range(1, 12):
+        row_1_alien_list.append(Car(10 + i*reference_car.width + i*10, reference_car.height/2))
+        row_2_alien_list.append(Classic_Invader(10 + i*reference_invader.width + i * 10, reference_car.height + reference_invader.height/2 + 10))
+
+    car_list.extend(row_1_alien_list)
+    objects_on_screen.extend(row_1_alien_list)
+    invader_list.extend(row_2_alien_list)
+    objects_on_screen.extend(row_2_alien_list)
+
     the_clown = Clown()
     objects_on_screen.append(the_clown)
     pie_list = []
