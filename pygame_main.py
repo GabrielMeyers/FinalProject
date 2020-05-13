@@ -10,15 +10,16 @@ GAME_MODE_TITLE_SCREEN = 1
 from ClownFile import Clown
 from ChickenFile import Chicken
 from PieFile import Pie
-from CarFile import Car
-from Second_line_alien import Classic_Invader
+from Top_Line_Alien import Top_Line_Alien
+from Second_And_Third_Alien import Second_And_Third_Alien
+from Bottom_Alien import  Fourth_And_Fifth_Alien
 
 # =====================  setup()
 def setup():
     """
     This happens once in the program, at the very beginning.
     """
-    global canvas, objects_on_screen, objects_to_add, bg_color, game_mode, pie_list, the_chicken, the_clown, score, ammo, car_list, hits, misses
+    global canvas, objects_on_screen, objects_to_add, bg_color, game_mode, pie_list, the_chicken, the_clown, score, ammo, Top_Line_Alien_list, hits, misses
     canvas = pygame.display.set_mode((750, 750))
     objects_on_screen = []  # this is a list of all things that should be drawn on screen.
     objects_to_add = [] #this is a list of things that should be added to the list on screen. Put them here while you
@@ -26,24 +27,37 @@ def setup():
                         #   to do so.
     bg_color = pygame.Color(128,128,128)  # you can find a list of color names at https://goo.gl/KR7Pke
     game_mode = GAME_MODE_MAIN
-    car_list = []
+    Top_Line_Alien_list = []
     invader_list = []
+    Fourth_And_Fifth_Alien_list = []
     # Add any other things you would like to have the program do at startup here.
-    reference_car = Car(0,0)
-    reference_invader = Classic_Invader(0,0)
-    # Alien_1_1 = Car(-300, 300+reference_car.height/2)
-    # right_car = Car(300, 300 - reference_car.height / 2)
+    reference_Top_Line_Alien = Top_Line_Alien(0,0)
+    reference_invader = Second_And_Third_Alien(0,0)
+    reference_Bottom_Line_Alien = Fourth_And_Fifth_Alien(0,0)
     x = 10
     row_1_alien_list = []
     row_2_alien_list = []
-    for i in range(1, 12):
-        row_1_alien_list.append(Car(10 + i*reference_car.width + i*10, reference_car.height/2))
-        row_2_alien_list.append(Classic_Invader(10 + i*reference_invader.width + i * 10, reference_car.height + reference_invader.height/2 + 10))
+    row_3_alien_list = []
+    row_4_alien_list = []
+    row_5_alien_list = []
 
-    car_list.extend(row_1_alien_list)
+    for i in range(1, 12):
+        row_1_alien_list.append(Top_Line_Alien(10 + i * reference_Top_Line_Alien.width + i * 10, reference_Top_Line_Alien.height/2 + 10))
+        row_2_alien_list.append(Second_And_Third_Alien(10 + i * reference_invader.width + i * 10, reference_Top_Line_Alien.height + reference_invader.height/2 + 30))
+        row_3_alien_list.append(Second_And_Third_Alien(10 + i * reference_invader.width + i * 10, reference_Top_Line_Alien.height + reference_invader.height + 70))
+        row_4_alien_list.append(Fourth_And_Fifth_Alien(10 + i * reference_invader.width + i * 10, reference_Top_Line_Alien.height + reference_invader.height + reference_Bottom_Line_Alien.height + 90))
+        row_5_alien_list.append(Fourth_And_Fifth_Alien(10 + i * reference_invader.width + i * 10, reference_Top_Line_Alien.height + reference_invader.height + reference_Bottom_Line_Alien.height + reference_Bottom_Line_Alien.height + 110))
+
+    Top_Line_Alien_list.extend(row_1_alien_list)
     objects_on_screen.extend(row_1_alien_list)
     invader_list.extend(row_2_alien_list)
     objects_on_screen.extend(row_2_alien_list)
+    invader_list.extend(row_3_alien_list)
+    objects_on_screen.extend(row_3_alien_list)
+    Fourth_And_Fifth_Alien_list.extend(row_4_alien_list)
+    objects_on_screen.extend(row_4_alien_list)
+    Fourth_And_Fifth_Alien_list.extend(row_5_alien_list)
+    objects_on_screen.extend(row_5_alien_list)
 
     the_clown = Clown()
     objects_on_screen.append(the_clown)
@@ -59,6 +73,7 @@ def setup():
 # =====================  loop()
 def loop(delta_T):
     """
+
      this is what determines what should happen over and over.
      delta_T is the time (in seconds) since the last loop() was called.
     """
@@ -210,9 +225,9 @@ def check_pie_clown_collision():
 def check_pie_alien_collision():
     global score
     for pie in pie_list:
-        for car in car_list:
-            if abs(pie.x - car.x) < (pie.width/2 +car.width/2) and \
-                abs(pie.y - car.y) < (pie.height / 2 + car.height / 2):
+        for Top_Line_Alien in Top_Line_Alien_list:
+            if abs(pie.x - Top_Line_Alien.x) < (pie.width/2 +Top_Line_Alien.width/2) and \
+                abs(pie.y - Top_Line_Alien.y) < (pie.height / 2 + Top_Line_Alien.height / 2):
                 pie.die()
                 print("HIT")
                 score += 30

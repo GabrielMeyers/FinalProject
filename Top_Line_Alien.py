@@ -1,18 +1,18 @@
-__author__ = 'yournamehere'
+__author__ = 'Gabriel'
 import pygame
 
 
-class Chicken:
-    def __init__(self):
+class Top_Line_Alien:
+    def __init__(self, x, y):
         """
         This is where we set up the variables for this particular object as soon as it is created.
         """
-        self.x = 375
-        self.y = 750
-        self.vx = 0
+        self.x = x
+        self.y = y
+        self.vx = 50
         self.vy = 0
         self.i_am_alive = True
-        self.image = pygame.image.load("images/Defender.png")
+        self.image = pygame.image.load("images/Top_alien.png")
         self.width = self.image.get_rect().width
         self.height = self.image.get_rect().height
 
@@ -22,8 +22,8 @@ class Chicken:
         :param screen_canvas:
         :return: None
         """
-        screen_canvas.blit(self.image,(int(self.x)-self.width/2,
-                                       int(self.y)-self.height/2))
+        screen_canvas.blit(self.image, (int(self.x) - self.width / 2,
+                                        int(self.y) - self.height / 2))
 
     def step(self, delta_T):
         """
@@ -32,10 +32,13 @@ class Chicken:
         :param delta_T:
         :return: None
         """
-        if self.y - self.height/2 < 400 :
-            self.y = 400 + self.height/2
+        self.x = self.x + self.vx * delta_T
+        self.y = self.y + self.vy * delta_T
 
-
+        if self.x +self.width/2 > 750:
+            self.vx *= -1
+        if self.x - self.width/2 < 0:
+            self.vx *= -1
     def is_dead(self):
         """
         lets another object know whether this object is still live and on the board. Used by the main loop to clear objects

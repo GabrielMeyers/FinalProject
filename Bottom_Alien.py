@@ -2,7 +2,7 @@ __author__ = 'Gabriel'
 import pygame
 
 
-class Car:
+class Fourth_And_Fifth_Alien:
     def __init__(self, x, y):
         """
         This is where we set up the variables for this particular object as soon as it is created.
@@ -12,7 +12,7 @@ class Car:
         self.vx = 50
         self.vy = 0
         self.i_am_alive = True
-        self.image = pygame.image.load("images/Top_alien.png")
+        self.image = pygame.image.load("images/Bottom_Alien.png")
         self.width = self.image.get_rect().width
         self.height = self.image.get_rect().height
 
