@@ -1,8 +1,11 @@
 __author__ = 'Gabriel'
 import pygame
 
+SECONDS_PER_FRAME = 0.5
+NUMBER_OF_FRAMES = 2
 
-class Top_Line_Alien:
+
+class GenericAlien:
     def __init__(self, x, y):
         """
         This is where we set up the variables for this particular object as soon as it is created.
@@ -12,9 +15,12 @@ class Top_Line_Alien:
         self.vx = 50
         self.vy = 0
         self.i_am_alive = True
-        self.image = pygame.image.load("images/Top_alien.png")
-        self.width = self.image.get_rect().width
-        self.height = self.image.get_rect().height
+        self.alien_frames_list = []
+        self.current_frame = 0
+        self.time_since_last_animation = 0
+        # self.width = self.alien_frames_list[0].get_rect().width
+        # self.height = self.alien_frames_list[0].get_rect().height
+        self.direction = 1 # 1 is right -1 is left
 
     def draw_self(self, screen_canvas):
         """
@@ -22,8 +28,10 @@ class Top_Line_Alien:
         :param screen_canvas:
         :return: None
         """
-        screen_canvas.blit(self.image, (int(self.x) - self.width / 2,
-                                        int(self.y) - self.height / 2))
+
+
+        screen_canvas.blit(self.alien_frames_list[self.current_frame],
+                           (int(self.x) - self.width / 2, int(self.y) - self.height / 2))
 
     def step(self, delta_T):
         """
@@ -32,25 +40,26 @@ class Top_Line_Alien:
         :param delta_T:
         :return: None
         """
-        self.x = self.x + self.vx * delta_T
-        self.y = self.y + self.vy * delta_T
+        # self.x = self.x + self.vx * delta_T
+        # self.y = self.y + self.vy * delta_T
+
+        self.time_since_last_animation += delta_T
+        if self.time_since_last_animation > SECONDS_PER_FRAME:
+            self.time_since_last_animation -= SECONDS_PER_FRAME
+            self.current_frame = (self.current_frame + 1)%NUMBER_OF_FRAMES
+            self.x += 50 * self.direction
 
         if self.x +self.width/2 > 750:
-            self.vx *= -1
+            self.direction *= -1
         if self.x - self.width/2 < 0:
-            self.vx *= -1
+            self.direction *= -1
     def is_dead(self):
         """
         lets another object know whether this object is still live and on the board. Used by the main loop to clear objects
         in need of removal.
         :return: True or False - is this object dead?
         """
-        if self.i_am_alive:
-            return False
-        else:
-            return True
-        # alternative (1-line) version of this function:
-        #  "return not self.i_am_alive"
+        return not self.i_am_alive
 
 
     def die(self):

@@ -59,3 +59,5 @@ class Bottom_Alien:
         :return: None
         """
         self.i_am_alive = False
+
+        Bottom_Alien
