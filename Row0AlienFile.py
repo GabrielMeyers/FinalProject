@@ -9,4 +9,5 @@ class Row0Alien(GenericAlien):
       self.alien_frames_list.append(pygame.image.load("images/AlienRow0v2.PNG"))
       self.width = self.alien_frames_list[0].get_rect().width
       self.height = self.alien_frames_list[0].get_rect().height
+      self.width = 80
 

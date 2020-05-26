@@ -20,7 +20,7 @@ def setup():
     This happens once in the program, at the very beginning.
     """
     global canvas, objects_on_screen, objects_to_add, bg_color, game_mode, pie_list, the_chicken, the_clown, score, ammo, Top_Line_Alien_list, hits, misses
-    canvas = pygame.display.set_mode((750, 900))
+    canvas = pygame.display.set_mode((1400, 1100))
     objects_on_screen = []  # this is a list of all things that should be drawn on screen.
     objects_to_add = [] #this is a list of things that should be added to the list on screen. Put them here while you
                         #   are in the middle of the loop, and they will be added in later in the loop, when it is safe
@@ -42,7 +42,7 @@ def setup():
     row_5_alien_list = []
 
     for i in range(1, 12):
-        row_1_alien_list.append(Row0Alien(10 + i * reference_Top_Line_Alien.width + i * 10 + 20, reference_Top_Line_Alien.height / 2 + 90))
+        row_1_alien_list.append(Row0Alien(10 + i * reference_Top_Line_Alien.width + i * 10, reference_Top_Line_Alien.height / 2 + 90))
         row_2_alien_list.append(Second_And_Third_Alien(10 + i * reference_invader.width + i * 10, reference_Top_Line_Alien.height + reference_invader.height/2 + 110))
         row_3_alien_list.append(Second_And_Third_Alien(10 + i * reference_invader.width + i * 10, reference_Top_Line_Alien.height + reference_invader.height + 150))
         row_4_alien_list.append(Fourth_And_Fifth_Alien(10 + i * reference_invader.width + i * 10, reference_Top_Line_Alien.height + reference_invader.height + reference_Bottom_Line_Alien.height + 170))
@@ -235,6 +235,11 @@ def check_pie_alien_collision():
                 pygame.mixer.music.load('sounds/invaderkilled.wav')
                 pygame.mixer.music.play(1)
 
+ 
+
+
+
+
 def shoot_pie():
     global ammo
     if len(pie_list) == 0 and ammo > 0:
@@ -283,7 +288,7 @@ def read_events():
             # or keyboard here.
         if evt.type == MOUSEMOTION:
             the_chicken.x = evt.pos[0]
-            the_chicken.y = evt.pos[1]
+            the_chicken.y = 1110 - the_chicken.height / 2
         if evt.type == MOUSEBUTTONDOWN:
             shoot_pie()
 

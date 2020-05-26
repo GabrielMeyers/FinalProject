@@ -32,8 +32,8 @@ class Chicken:
         :param delta_T:
         :return: None
         """
-        if self.y - self.height/2 < 400 :
-            self.y = 400 + self.height/2
+        if self.y - self.height/2 < self.height:
+            self.y = 700 + self.height/2
 
 
     def is_dead(self):

@@ -1,7 +1,7 @@
 __author__ = 'Gabriel'
 import pygame
 
-SECONDS_PER_FRAME = 0.5
+SECONDS_PER_FRAME = 0.75
 NUMBER_OF_FRAMES = 2
 
 
@@ -47,12 +47,13 @@ class GenericAlien:
         if self.time_since_last_animation > SECONDS_PER_FRAME:
             self.time_since_last_animation -= SECONDS_PER_FRAME
             self.current_frame = (self.current_frame + 1)%NUMBER_OF_FRAMES
-            self.x += 50 * self.direction
-
-        if self.x +self.width/2 > 750:
-            self.direction *= -1
-        if self.x - self.width/2 < 0:
-            self.direction *= -1
+            self.x += 80 * self.direction
+            if self.x +self.width/2 > 1400:
+                self.direction *= -1
+                self.y += 60
+            if self.x - self.width/2 < 0:
+                self.direction *= -1
+                self.y += 60
     def is_dead(self):
         """
         lets another object know whether this object is still live and on the board. Used by the main loop to clear objects
