@@ -13,13 +13,15 @@ from PieFile import Pie
 from Row0AlienFile import Row0Alien
 from Second_And_Third_Alien import Second_And_Third_Alien
 from Bottom_Alien import  Fourth_And_Fifth_Alien
+from AlienBulletFile import AlienBullet
+import random
 
 # =====================  setup()
 def setup():
     """
     This happens once in the program, at the very beginning.
     """
-    global canvas, objects_on_screen, objects_to_add, bg_color, game_mode, pie_list, the_chicken, the_clown, score, ammo, Top_Line_Alien_list, hits, misses
+    global canvas, objects_on_screen, objects_to_add, bg_color, game_mode, pie_list, the_chicken, the_clown, score, ammo, Top_Line_Alien_list, hits, misses, alien_list, time_since_last_animation, SECONDS_PER_FRAME, bullet_list, lives
     canvas = pygame.display.set_mode((1400, 1100))
     objects_on_screen = []  # this is a list of all things that should be drawn on screen.
     objects_to_add = [] #this is a list of things that should be added to the list on screen. Put them here while you
@@ -28,40 +30,32 @@ def setup():
     bg_color = pygame.Color(128,128,128)  # you can find a list of color names at https://goo.gl/KR7Pke
     game_mode = GAME_MODE_MAIN
     Top_Line_Alien_list = []
-    invader_list = []
     Fourth_And_Fifth_Alien_list = []
     # Add any other things you would like to have the program do at startup here.
     reference_Top_Line_Alien = Row0Alien(0, 0)
     reference_invader = Second_And_Third_Alien(0,0)
     reference_Bottom_Line_Alien = Fourth_And_Fifth_Alien(0,0)
-    x = 10
-    row_1_alien_list = []
-    row_2_alien_list = []
-    row_3_alien_list = []
-    row_4_alien_list = []
-    row_5_alien_list = []
+    time_since_last_animation = 0
+    alien_list = []
+    column_list = []
 
     for i in range(1, 12):
-        row_1_alien_list.append(Row0Alien(10 + i * reference_Top_Line_Alien.width + i * 10, reference_Top_Line_Alien.height / 2 + 90))
-        row_2_alien_list.append(Second_And_Third_Alien(10 + i * reference_invader.width + i * 10, reference_Top_Line_Alien.height + reference_invader.height/2 + 110))
-        row_3_alien_list.append(Second_And_Third_Alien(10 + i * reference_invader.width + i * 10, reference_Top_Line_Alien.height + reference_invader.height + 150))
-        row_4_alien_list.append(Fourth_And_Fifth_Alien(10 + i * reference_invader.width + i * 10, reference_Top_Line_Alien.height + reference_invader.height + reference_Bottom_Line_Alien.height + 170))
-        row_5_alien_list.append(Fourth_And_Fifth_Alien(10 + i * reference_invader.width + i * 10, reference_Top_Line_Alien.height + reference_invader.height + reference_Bottom_Line_Alien.height + reference_Bottom_Line_Alien.height + 190))
+        this_column = [
+            Row0Alien(10 + i * reference_Top_Line_Alien.width + i * 10, reference_Top_Line_Alien.height / 2 + 90),
+            Second_And_Third_Alien(10 + i * reference_invader.width + i * 10, reference_Top_Line_Alien.height + reference_invader.height / 2 + 110),
+            Second_And_Third_Alien(10 + i * reference_invader.width + i * 10, reference_Top_Line_Alien.height + reference_invader.height + 150),
+            Fourth_And_Fifth_Alien(10 + i * reference_invader.width + i * 10, reference_Top_Line_Alien.height + reference_invader.height + reference_Bottom_Line_Alien.height + 170),
+            Fourth_And_Fifth_Alien(10 + i * reference_invader.width + i * 10, reference_Top_Line_Alien.height + reference_invader.height + reference_Bottom_Line_Alien.height + reference_Bottom_Line_Alien.height + 190)
+        ]
+        alien_list.extend(this_column)
+        column_list.append(this_column)
 
-    Top_Line_Alien_list.extend(row_1_alien_list)
-    objects_on_screen.extend(row_1_alien_list)
-    invader_list.extend(row_2_alien_list)
-    objects_on_screen.extend(row_2_alien_list)
-    invader_list.extend(row_3_alien_list)
-    objects_on_screen.extend(row_3_alien_list)
-    Fourth_And_Fifth_Alien_list.extend(row_4_alien_list)
-    objects_on_screen.extend(row_4_alien_list)
-    Fourth_And_Fifth_Alien_list.extend(row_5_alien_list)
-    objects_on_screen.extend(row_5_alien_list)
+    objects_on_screen.extend(alien_list)
 
     the_clown = Clown()
     objects_on_screen.append(the_clown)
     pie_list = []
+    bullet_list = []
     the_chicken = Chicken()
     objects_on_screen.append(the_chicken)
     pygame.mouse.set_visible(False)
@@ -70,6 +64,8 @@ def setup():
     ammo = 10
     hits = 0
     misses = 0
+    SECONDS_PER_FRAME = .75
+    lives = 3
 # =====================  loop()
 def loop(delta_T):
     """
@@ -90,8 +86,10 @@ def loop(delta_T):
         clear_dead_objects()
         add_new_objects()
         draw_objects()
-        check_pie_clown_collision()
+        alien_shoot()
+        check_bullet_defender_collision()
         check_pie_alien_collision()
+        check_bullet_pie_collision()
         calc_misses()
         show_stats(delta_T) #optional. Comment this out if it annoys you.
         the_end_game()
@@ -102,11 +100,14 @@ def loop(delta_T):
 
 
 # =====================  animate_objects()
+
+
 def animate_objects(delta_T):
     """
     tells each object to "step"...
     """
     global objects_on_screen
+    alien_movement(delta_T)
     for object in objects_on_screen:
         if object.is_dead(): #   ...but don't bother "stepping" the dead ones.
             continue
@@ -133,7 +134,20 @@ def clear_dead_objects():
             #      ... they came back to you.
         else:
             i += 1
-
+    i = 0
+    for alien in alien_list[:]:
+        if alien.is_dead():
+            alien_list.pop(i)  # removes the ith object and pulls everything else inwards, so don't advance "i"
+            #      ... they came back to you.
+        else:
+            i += 1
+    i = 0
+    for bullet in bullet_list[:]:
+        if bullet.is_dead():
+            bullet_list.pop(i)  # removes the ith object and pulls everything else inwards, so don't advance "i"
+            #      ... they came back to you.
+        else:
+            i += 1
 # =====================  add_new_objects()
 def add_new_objects():
     """
@@ -208,37 +222,57 @@ def show_stats(delta_T):
     misses_text_rect.left = 10  # now relocate the box to the left side top
     misses_text_rect.top = canvas.get_rect().top + 30
     canvas.blit(misses_text_surface, misses_text_rect)
-def check_pie_clown_collision():
-    global score, hits
-    for pie in pie_list:
-        if abs(pie.x - the_clown.x) < (pie.width/2 +the_clown.width/2) and \
-            abs(pie.y - the_clown.y) < (pie.height / 2 + the_clown.height / 2):
-            pie.die()
-            print("HIT")
-            score += 50
-            hits += 1
-            pygame.mixer.music.load('sounds/Smashingsound.mp3')
-            pygame.mixer.music.play(1)
-            # playsound('sounds/Smashingsound.mp3')
 
+def check_bullet_defender_collision():
+    global lives
+    for bullet in bullet_list:
+            if abs(bullet.x - the_chicken.x) < (bullet.width / 2 + the_chicken.width / 2) and \
+                    abs(bullet.y - the_chicken.y) < (bullet.height / 2 + the_chicken.height / 2):
+                bullet.die()
+                lives -= 1
+                print("lives ",lives)
+                    # pygame.mixer.music.load('sounds/invaderkilled.wav')
+                    # pygame.mixer.music.play(1)
 
 def check_pie_alien_collision():
-    global score
+    global score , SECONDS_PER_FRAME
     for pie in pie_list:
-        for Top_Line_Alien in Top_Line_Alien_list:
-            if abs(pie.x - Top_Line_Alien.x) < (pie.width/2 +Top_Line_Alien.width/2) and \
-                abs(pie.y - Top_Line_Alien.y) < (pie.height / 2 + Top_Line_Alien.height / 2):
+        for alien in alien_list:
+            if abs(pie.x - alien.x) < (pie.width/2 +alien.width/2) and \
+                abs(pie.y - alien.y) < (pie.height / 2 + alien.height / 2):
                 pie.die()
-                Top_Line_Alien.die()
+                alien.die()
                 print("HIT")
                 score += 30
                 pygame.mixer.music.load('sounds/invaderkilled.wav')
                 pygame.mixer.music.play(1)
+                SECONDS_PER_FRAME -= .008
 
- 
+def check_bullet_pie_collision():
+    for pie in pie_list:
+        for bullet in bullet_list:
+            if abs(pie.x - bullet.x) < (pie.width/2 +bullet.width/2) and \
+                abs(pie.y - bullet.y) < (pie.height / 2 + bullet.height / 2):
+                pie.die()
+                bullet.die()
 
 
+def alien_movement(delta_T):
+    global time_since_last_animation , SECONDS_PER_FRAME
+    time_since_last_animation += delta_T
+    if time_since_last_animation > SECONDS_PER_FRAME:
+        time_since_last_animation -= SECONDS_PER_FRAME
+        change_direction = False
+        for alien in alien_list:
+            if alien.is_out_of_bounds():
+                change_direction = True
 
+        if change_direction:
+            for alien in alien_list:
+                alien.change_direction()
+
+        for alien in alien_list:
+            alien.alien_step()
 
 def shoot_pie():
     global ammo
@@ -246,15 +280,24 @@ def shoot_pie():
         temp_pie = Pie(the_chicken.x,the_chicken.y)
         pie_list.append(temp_pie)
         objects_to_add.append(temp_pie)
-        ammo -= 1
+
+def alien_shoot():
+    the_alien = alien_list[random.randrange(len(alien_list))]
+    the_time = random.randrange(249)
+    if the_time < 20:
+        temp_AlienBullet = AlienBullet(the_alien.x, the_alien.y)
+        bullet_list.append(temp_AlienBullet)
+        objects_to_add.append(temp_AlienBullet)
+
+
 
 def calc_misses():
     global misses
-    misses = 10-ammo - hits
+    misses = 10 - ammo - hits
 
 def the_end_game():
     global pie, clown, chicken, Alien_1_1, Alien_1_2
-    if ammo == 0:
+    if alien_list == [ ] or lives <= 0:
         canvas.fill(pygame.Color("black"))
         gameover_font = pygame.font.SysFont("Arial", 96)
         gameover_color = pygame.Color("yellow")
@@ -271,8 +314,6 @@ def the_end_game():
         score_rectangle = score_surface.get_rect()
 
         canvas.blit(score_surface, (300 - score_rectangle.width / 2, 500 - score_rectangle.height / 2))
-          #
-
 
 # =====================  read_events()
 def read_events():

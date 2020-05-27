@@ -21,6 +21,7 @@ class GenericAlien:
         # self.width = self.alien_frames_list[0].get_rect().width
         # self.height = self.alien_frames_list[0].get_rect().height
         self.direction = 1 # 1 is right -1 is left
+        self.down_next_step = False
 
     def draw_self(self, screen_canvas):
         """
@@ -40,20 +41,26 @@ class GenericAlien:
         :param delta_T:
         :return: None
         """
-        # self.x = self.x + self.vx * delta_T
-        # self.y = self.y + self.vy * delta_T
+        pass
 
-        self.time_since_last_animation += delta_T
-        if self.time_since_last_animation > SECONDS_PER_FRAME:
-            self.time_since_last_animation -= SECONDS_PER_FRAME
-            self.current_frame = (self.current_frame + 1)%NUMBER_OF_FRAMES
-            self.x += 80 * self.direction
-            if self.x +self.width/2 > 1400:
-                self.direction *= -1
-                self.y += 60
-            if self.x - self.width/2 < 0:
-                self.direction *= -1
-                self.y += 60
+    def alien_step(self):
+        self.current_frame = (self.current_frame + 1) % NUMBER_OF_FRAMES
+        self.x += 80 * self.direction
+        if self.down_next_step:
+            self.y += 50
+            self.down_next_step = False
+
+    def is_out_of_bounds(self):
+        if self.x + self.width / 2 > 1400:
+            return True
+        if self.x - self.width / 2 < 0:
+            return True
+        return False
+
+    def change_direction(self):
+        self.direction *= -1
+        self.down_next_step = True
+
     def is_dead(self):
         """
         lets another object know whether this object is still live and on the board. Used by the main loop to clear objects
